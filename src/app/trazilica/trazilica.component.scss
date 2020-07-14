@@ -1,6 +1,10 @@
 .content-container {
   margin-top: 175px;
 
+  @media only screen and (max-width: 450px){
+    margin-top: 125px;
+  }
+
   &__purple-bar {
     background-color: #726aff;
     height: 7px;
@@ -11,15 +15,27 @@
   &__title {
     margin-bottom: 60px;
 
+    @media only screen and (max-width: 450px){
+      margin-bottom: 45px;
+    }
+
     &--top {
       font-size: 45px;
       font-weight: 400;
+
+      @media only screen and (max-width: 450px){
+        font-size: 40px;
+      }
     }
 
     &--bottom {
       color: #726aff;
       font-weight: 800;
       font-size: 50px;
+
+      @media only screen and (max-width: 450px){
+        font-size: 35px;
+      }
     }
   }
 }
@@ -28,6 +44,16 @@
   position: relative;
   margin-top: 15px;
   margin-bottom: 20px;
+
+  &__responsive-grid {
+    display: block;
+
+    @media only screen and (max-width: 450px){
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+  }
 
   &__dropdown {
     position: absolute;
@@ -62,6 +88,11 @@
   cursor: pointer;
   font-weight: 600;
 
+  @media only screen and (max-width: 450px){
+     margin: 25px 0 0 0;
+     width: 300px;
+  }
+
   &:disabled {
     background-color: #9995e7;
     cursor: not-allowed;
@@ -73,15 +104,30 @@
   color: #726aff;
   height: 250px;
 
+  @media only screen and (max-width: 450px){
+      height: auto;
+  }
+
   &__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-column-gap: 30px;
 
+    @media only screen and (max-width: 450px){
+      grid-template-columns: 1fr;
+      grid-column-gap: 0px;
+    }
+
     div {
       padding: 15px 30px 15px 0px;
       display: grid;
       grid-template-columns: 1fr 2fr;
+      margin-top: 0px;
+
+      @media only screen and (max-width: 450px){
+        grid-template-columns: 1fr;
+        margin-top: 10px;
+      }
 
       p {
         padding-bottom: 5px;

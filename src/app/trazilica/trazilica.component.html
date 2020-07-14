@@ -10,11 +10,10 @@
   <form (ngSubmit)="onSubmit()" #f="ngForm">
     <label for="zupanija" class="label-class">Županija</label>
     <div class="county">
-      <input type="text" name="zupanija" id="zupanija" ngModel autocomplete="off"
-       (focus)="toggleCountyDropdown()"
-        placeholder=" &#xf041;   Županija" style="font-family:Arial, FontAwesome"
-        #countyKup  (keyup)="onCountyKeyUp(countyKup.value)">
-      <div class="county__dropdown" (blur) ="toggleCountyDropdown()">
+      <input type="text" name="zupanija" id="zupanija" ngModel autocomplete="off" (focus)="toggleCountyDropdown()"
+        placeholder=" &#xf041;   Županija" style="font-family:Arial, FontAwesome" #countyKup
+        (keyup)="onCountyKeyUp(countyKup.value)">
+      <div class="county__dropdown" (blur)="toggleCountyDropdown()">
         <div *ngIf="countyDropdown">
           <div *ngFor="let county of listCounties" class="county__dropdown-option" (click)="selectCounty(county)">
             {{ county }}
@@ -25,17 +24,15 @@
 
     <label for="gradOpcina" class="label-class">Grad ili općina</label>
     <div class="county">
-      <div>
+      <div class="county__responsive-grid">
         <input type="text" name="gradOpcina" id="gradOpcina" ngModel autocomplete="off"
-          (focus)="toggleTownComunityDropown()"
-          placeholder=" &#xf041;   Grad ili općina" style="font-family:Open Sans, FontAwesome"
-          #towComUp (keyup)="ontowComUp(towComUp.value)"
-          >
+          (focus)="toggleTownComunityDropown()" placeholder=" &#xf041;   Grad ili općina"
+          style="font-family:Open Sans, FontAwesome" #towComUp (keyup)="ontowComUp(towComUp.value)">
         <button class="btn-submit" type="submit" [disabled]="!isFormValid">Detalji</button>
       </div>
       <div class="county__dropdown" (blur)="toggleTownComunityDropown()">
         <div *ngIf="townComunityDropdown">
-          <div *ngFor="let item of listTownsComunities" class="county__dropdown-option" 
+          <div *ngFor="let item of listTownsComunities" class="county__dropdown-option"
             (click)="selectTownComunity(item)">
             {{ item }}
           </div>
