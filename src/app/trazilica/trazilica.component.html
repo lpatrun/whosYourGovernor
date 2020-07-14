@@ -1,0 +1,102 @@
+<div class="content-container">
+  <div class="content-container__purple-bar"></div>
+
+  <div class="content-container__title">
+    <div class="content-container__title--top">Tko je Vaš</div>
+    <div class="content-container__title--bottom">Predstavnik?</div>
+  </div>
+
+
+  <form (ngSubmit)="onSubmit()" #f="ngForm">
+    <label for="zupanija" class="label-class">Županija</label>
+    <div class="county">
+      <input type="text" name="zupanija" id="zupanija" ngModel autocomplete="off"
+       (focus)="toggleCountyDropdown()"
+        placeholder=" &#xf041;   Županija" style="font-family:Arial, FontAwesome"
+        #countyKup  (keyup)="onCountyKeyUp(countyKup.value)">
+      <div class="county__dropdown" (blur) ="toggleCountyDropdown()">
+        <div *ngIf="countyDropdown">
+          <div *ngFor="let county of listCounties" class="county__dropdown-option" (click)="selectCounty(county)">
+            {{ county }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <label for="gradOpcina" class="label-class">Grad ili općina</label>
+    <div class="county">
+      <div>
+        <input type="text" name="gradOpcina" id="gradOpcina" ngModel autocomplete="off"
+          (focus)="toggleTownComunityDropown()"
+          placeholder=" &#xf041;   Grad ili općina" style="font-family:Open Sans, FontAwesome"
+          #towComUp (keyup)="ontowComUp(towComUp.value)"
+          >
+        <button class="btn-submit" type="submit" [disabled]="!isFormValid">Detalji</button>
+      </div>
+      <div class="county__dropdown" (blur)="toggleTownComunityDropown()">
+        <div *ngIf="townComunityDropdown">
+          <div *ngFor="let item of listTownsComunities" class="county__dropdown-option" 
+            (click)="selectTownComunity(item)">
+            {{ item }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="result-details">
+    <div *ngIf="townGovernor" class="result-details__grid">
+      <div><b>Gradonačelnik</b>
+        <p>{{ townGovernor.governor | capitalise}}</p>
+      </div>
+      <div><b>Web</b>
+        <p>{{ townGovernor.web }}</p>
+      </div>
+      <div><b>Zamjenik</b>
+        <p>{{ townGovernor.viceGovernor | capitalise }}</p>
+      </div>
+      <div><b>Email</b>
+        <p>{{ townGovernor.email }}</p>
+      </div>
+      <div><b>Adresa</b>
+        <p>{{ townGovernor.address | capitalise }}</p>
+      </div>
+      <div><b>Telefon</b>
+        <p>{{ townGovernor.phone | prettyNum }}</p>
+      </div>
+      <div><b>Poštanski broj</b>
+        <p>{{ townGovernor.zipCode }}</p>
+      </div>
+      <div><b>Faks</b>
+        <p>{{ townGovernor.fax | prettyNum }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="countyGovernor" class="result-details__grid">
+      <div><b>Župan</b>
+        <p>{{ countyGovernor.governor | capitalise }}</p>
+      </div>
+      <div><b>Web</b>
+        <p>{{ countyGovernor.web }}</p>
+      </div>
+      <div><b>Zamjenik</b>
+        <p>{{ countyGovernor.viceGovernor | capitalise }}</p>
+      </div>
+      <div><b>Email</b>
+        <p>{{ countyGovernor.email }}</p>
+      </div>
+      <div><b>Adresa</b>
+        <p>{{ countyGovernor.address | capitalise }}</p>
+      </div>
+      <div><b>Telefon</b>
+        <p>{{ countyGovernor.phone | prettyNum }}</p>
+      </div>
+      <div><b>Poštanski broj</b>
+        <p>{{ countyGovernor.zipCode }}</p>
+      </div>
+      <div><b>Faks</b>
+        <p>{{ countyGovernor.fax | prettyNum }}</p>
+      </div>
+    </div>
+  </div>
+</div>
