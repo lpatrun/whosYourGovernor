@@ -107,11 +107,9 @@
 .result-details {
   margin: 75px auto;
   color: #726aff;
-  min-height: 250px;
 
   @media only screen and (max-width: 450px) {
     margin: 50px auto;
-    height: auto;
   }
 
   &__title {

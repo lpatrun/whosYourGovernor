@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from './shared/data.service';
-import { County } from './shared/county.model';
-import { Town } from './shared/town.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
