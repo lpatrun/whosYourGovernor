@@ -1,1 +1,7 @@
-<p>header works!</p>
+<div class="container__menu">
+  <img src="../assets/osijek.png" alt="Osijek">
+  <div class="container__menu__langs">
+    <span [ngClass]="{'active-lang': selectedLanguage ==='hr'}" (click)="useLang('hr')">HR</span>
+    <span [ngClass]="{'active-lang': selectedLanguage ==='en'}" (click)="useLang('en')">EN</span>
+  </div>
+</div>

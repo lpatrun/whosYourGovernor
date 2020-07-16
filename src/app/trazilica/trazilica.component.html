@@ -2,12 +2,109 @@
   <div class="content-container__purple-bar"></div>
 
   <div class="content-container__title">
-    <div class="content-container__title--top">Tko je Vaš</div>
-    <div class="content-container__title--bottom">Predstavnik?</div>
+    <div class="content-container__title--top">{{ 'appText.question' | translate }}</div>
+    <div class="content-container__title--bottom">{{ 'appText.person' | translate }}</div>
   </div>
 
+  <form (ngSubmit)="onSubmit()">
 
-  <form (ngSubmit)="onSubmit()" #f="ngForm">
+    <label for="zupanija" class="label-class">{{ 'appText.county' | translate }}</label>
+    <div class="county">
+      <input type="text" placeholder=" &#xf041;   {{ 'appText.county' | translate }}"
+        style="font-family:Arial, FontAwesome" aria-label="Text" matInput [formControl]="countiesControl"
+        [matAutocomplete]="auto" (focus)="countyAutoSelect()" #countyKup (keyup)="getZupanija(countyKup.value)"
+        id="zupanija">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getZupanija($event.option.value)'>
+        <mat-option *ngFor="let zupanija of filteredCounties | async | alphabeticalOrder" [value]="zupanija.name">
+          {{ zupanija.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <label for="gradOpcina" class="label-class">{{ 'appText.town' | translate }}</label>
+    <div class="county">
+      <div class="county__responsive-grid">
+        <div>
+          <input type="text" placeholder=" &#xf041;   {{ 'appText.town' | translate }}"
+            style="font-family:Open Sans, FontAwesome" aria-label="Text" matInput [formControl]="townControl"
+            [matAutocomplete]="auto2" (focus)="townComunityAutoSelect()" #comunityKup
+            (keyup)="getOpcina(comunityKup.value)">
+          <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="getOpcina($event.option.value)">
+            <mat-option *ngFor="let opcina of filteredTown | async | alphabeticalOrder" [value]="opcina.name">
+              {{ opcina.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+        <button class="btn-submit" type="submit"
+          [disabled]="!validCounty && !validTown">{{ 'appText.details' | translate }}</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="result-details__title">{{ 'appText.detailsFor' | translate }}: {{ entityToDisplay }}</div>
+
+<div class="content-container">
+  <div class="result-details">
+    <div *ngIf="townGovernor" class="result-details__grid">
+      <div><b>{{ 'appText.mayor' | translate }}</b>
+        <p>{{ townGovernor.governor | capitalise}}</p>
+      </div>
+      <div><b>Web</b>
+        <p>{{ townGovernor.web }}</p>
+      </div>
+      <div><b>{{ 'appText.vice' | translate }}</b>
+        <p>{{ townGovernor.viceGovernor | capitalise }}</p>
+      </div>
+      <div><b>Email</b>
+        <p>{{ townGovernor.email }}</p>
+      </div>
+      <div><b>{{ 'appText.address' | translate }}</b>
+        <p>{{ townGovernor.address | capitalise }}</p>
+      </div>
+      <div><b>{{ 'appText.telephone' | translate }}</b>
+        <p><a [href]="'tel:' + townGovernor.phone">{{ townGovernor.phone | prettyNum }}</a></p>
+      </div>
+      <div><b>{{ 'appText.zip' | translate }}</b>
+        <p>{{ townGovernor.zipCode }}</p>
+      </div>
+      <div><b>{{ 'appText.fax' | translate }}</b>
+        <p>{{ townGovernor.fax | prettyNum }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="countyGovernor" class="result-details__grid">
+      <div><b>{{ 'appText.governor' | translate }}</b>
+        <p>{{ countyGovernor.governor | capitalise }}</p>
+      </div>
+      <div><b>Web</b>
+        <p>{{ countyGovernor.web }}</p>
+      </div>
+      <div><b>{{ 'appText.vice' | translate }}</b>
+        <p>{{ countyGovernor.viceGovernor | capitalise }}</p>
+      </div>
+      <div><b>Email</b>
+        <p>{{ countyGovernor.email }}</p>
+      </div>
+      <div><b>{{ 'appText.address' | translate }}</b>
+        <p>{{ countyGovernor.address | capitalise }}</p>
+      </div>
+      <div><b>{{ 'appText.telephone' | translate }}</b>
+        <p><a [href]="'tel:' + countyGovernor.phone">{{ countyGovernor.phone | prettyNum }}</a></p>
+      </div>
+      <div><b>{{ 'appText.zip' | translate }}</b>
+        <p>{{ countyGovernor.zipCode }}</p>
+      </div>
+      <div><b>{{ 'appText.fax' | translate }}</b>
+        <p>{{ countyGovernor.fax | prettyNum }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <!-- Prva verzija
+   <form (ngSubmit)="onSubmit()" #f="ngForm">
     <label for="zupanija" class="label-class">Županija</label>
     <div class="county">
       <input type="text" name="zupanija" id="zupanija" ngModel autocomplete="off" (focus)="toggleCountyDropdown()"
@@ -25,75 +122,21 @@
     <label for="gradOpcina" class="label-class">Grad ili općina</label>
     <div class="county">
       <div class="county__responsive-grid">
-        <input type="text" name="gradOpcina" id="gradOpcina" ngModel autocomplete="off"
-          (focus)="toggleTownComunityDropown()" placeholder=" &#xf041;   Grad ili općina"
-          style="font-family:Open Sans, FontAwesome" #towComUp (keyup)="ontowComUp(towComUp.value)">
-        <button class="btn-submit" type="submit" [disabled]="!isFormValid">Detalji</button>
-      </div>
-      <div class="county__dropdown" (blur)="toggleTownComunityDropown()">
-        <div *ngIf="townComunityDropdown">
-          <div *ngFor="let item of listTownsComunities" class="county__dropdown-option"
-            (click)="selectTownComunity(item)">
-            {{ item }}
+        <div>
+          <input type="text" name="gradOpcina" id="gradOpcina" ngModel autocomplete="off"
+            (focus)="toggleTownComunityDropown()" placeholder=" &#xf041;   Grad ili općina"
+            style="font-family:Open Sans, FontAwesome" #towComUp (keyup)="ontowComUp(towComUp.value)">
+          <div class="county__dropdown" (blur)="toggleTownComunityDropown()">
+            <div *ngIf="townComunityDropdown">
+              <div *ngFor="let item of listTownsComunities" class="county__dropdown-option"
+                (click)="selectTownComunity(item)">
+                {{ item }}
+              </div>
+            </div>
           </div>
         </div>
+        <button class="btn-submit" type="submit" [disabled]="!isFormValid">Detalji</button>
       </div>
-    </div>
-  </form>
 
-  <div class="result-details">
-    <div *ngIf="townGovernor" class="result-details__grid">
-      <div><b>Gradonačelnik</b>
-        <p>{{ townGovernor.governor | capitalise}}</p>
-      </div>
-      <div><b>Web</b>
-        <p>{{ townGovernor.web }}</p>
-      </div>
-      <div><b>Zamjenik</b>
-        <p>{{ townGovernor.viceGovernor | capitalise }}</p>
-      </div>
-      <div><b>Email</b>
-        <p>{{ townGovernor.email }}</p>
-      </div>
-      <div><b>Adresa</b>
-        <p>{{ townGovernor.address | capitalise }}</p>
-      </div>
-      <div><b>Telefon</b>
-        <p>{{ townGovernor.phone | prettyNum }}</p>
-      </div>
-      <div><b>Poštanski broj</b>
-        <p>{{ townGovernor.zipCode }}</p>
-      </div>
-      <div><b>Faks</b>
-        <p>{{ townGovernor.fax | prettyNum }}</p>
-      </div>
     </div>
-
-    <div *ngIf="countyGovernor" class="result-details__grid">
-      <div><b>Župan</b>
-        <p>{{ countyGovernor.governor | capitalise }}</p>
-      </div>
-      <div><b>Web</b>
-        <p>{{ countyGovernor.web }}</p>
-      </div>
-      <div><b>Zamjenik</b>
-        <p>{{ countyGovernor.viceGovernor | capitalise }}</p>
-      </div>
-      <div><b>Email</b>
-        <p>{{ countyGovernor.email }}</p>
-      </div>
-      <div><b>Adresa</b>
-        <p>{{ countyGovernor.address | capitalise }}</p>
-      </div>
-      <div><b>Telefon</b>
-        <p>{{ countyGovernor.phone | prettyNum }}</p>
-      </div>
-      <div><b>Poštanski broj</b>
-        <p>{{ countyGovernor.zipCode }}</p>
-      </div>
-      <div><b>Faks</b>
-        <p>{{ countyGovernor.fax | prettyNum }}</p>
-      </div>
-    </div>
-  </div>
-</div>
+  </form> -->

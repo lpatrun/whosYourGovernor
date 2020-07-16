@@ -16,10 +16,15 @@ export class DataService implements OnInit {
   townGovernor = new Subject<TownGovernor>();
   countyGowernor = new Subject<CountyGovernor>();
 
+  selectedLanguage = new Subject<string>();
+
+  
+
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+
   }
 
   toFetchCounties() {
@@ -69,5 +74,9 @@ export class DataService implements OnInit {
     ).subscribe(data => {
       this.countyGowernor.next(data);
     });
+  }
+
+  toChangeLang(language: string) {
+    this.selectedLanguage.next(language);
   }
 }
