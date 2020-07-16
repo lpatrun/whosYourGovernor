@@ -51,52 +51,52 @@
         <p>{{ townGovernor.governor | capitalise}}</p>
       </div>
       <div><b>Web</b>
-        <p>{{ townGovernor.web }}</p>
+        <p>{{ townGovernor.web | noData }}</p>
       </div>
       <div><b>{{ 'appText.vice' | translate }}</b>
-        <p>{{ townGovernor.viceGovernor | capitalise }}</p>
+        <p>{{ townGovernor.viceGovernor | capitalise | noData }}</p>
       </div>
       <div><b>Email</b>
-        <p>{{ townGovernor.email }}</p>
+        <p>{{ townGovernor.email | noData  | noData}}</p>
       </div>
       <div><b>{{ 'appText.address' | translate }}</b>
-        <p>{{ townGovernor.address | capitalise }}</p>
+        <p>{{ townGovernor.address | capitalise | noData}}</p>
       </div>
       <div><b>{{ 'appText.telephone' | translate }}</b>
-        <p><a [href]="'tel:' + townGovernor.phone">{{ townGovernor.phone | prettyNum }}</a></p>
+        <p><a [href]="'tel:' + townGovernor.phone">{{ townGovernor.phone | prettyNum  | noData}}</a></p>
       </div>
       <div><b>{{ 'appText.zip' | translate }}</b>
-        <p>{{ townGovernor.zipCode }}</p>
+        <p>{{ townGovernor.zipCode | noData }}</p>
       </div>
       <div><b>{{ 'appText.fax' | translate }}</b>
-        <p>{{ townGovernor.fax | prettyNum }}</p>
+        <p>{{ townGovernor.fax | prettyNum | noData }}</p>
       </div>
     </div>
 
     <div *ngIf="countyGovernor" class="result-details__grid">
       <div><b>{{ 'appText.governor' | translate }}</b>
-        <p>{{ countyGovernor.governor | capitalise }}</p>
+        <p>{{ countyGovernor.governor | capitalise | noData}}</p>
       </div>
       <div><b>Web</b>
-        <p>{{ countyGovernor.web }}</p>
+        <p>{{ countyGovernor.web | noData }}</p>
       </div>
       <div><b>{{ 'appText.vice' | translate }}</b>
-        <p>{{ countyGovernor.viceGovernor | capitalise }}</p>
+        <p>{{ countyGovernor.viceGovernor | capitalise | noData }}</p>
       </div>
       <div><b>Email</b>
-        <p>{{ countyGovernor.email }}</p>
+        <p>{{ countyGovernor.email | noData }}</p>
       </div>
       <div><b>{{ 'appText.address' | translate }}</b>
-        <p>{{ countyGovernor.address | capitalise }}</p>
+        <p>{{ countyGovernor.address | capitalise | noData }}</p>
       </div>
       <div><b>{{ 'appText.telephone' | translate }}</b>
-        <p><a [href]="'tel:' + countyGovernor.phone">{{ countyGovernor.phone | prettyNum }}</a></p>
+        <p><a [href]="'tel:' + countyGovernor.phone">{{ countyGovernor.phone | prettyNum | noData }}</a></p>
       </div>
       <div><b>{{ 'appText.zip' | translate }}</b>
-        <p>{{ countyGovernor.zipCode }}</p>
+        <p>{{ countyGovernor.zipCode | noData }}</p>
       </div>
       <div><b>{{ 'appText.fax' | translate }}</b>
-        <p>{{ countyGovernor.fax | prettyNum }}</p>
+        <p>{{ countyGovernor.fax | prettyNum | noData }}</p>
       </div>
     </div>
   </div>

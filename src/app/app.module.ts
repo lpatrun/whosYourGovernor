@@ -15,6 +15,7 @@ import { HeaderComponent } from './header/header.component';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { NoDataPipe } from './shared/no-data.pipe';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
     PrettyNumPipe,
     CapitalisePipe,
     AlphabeticalOrderPipe,
-    HeaderComponent
+    HeaderComponent,
+    NoDataPipe
   ],
   imports: [
     BrowserModule,
