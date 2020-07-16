@@ -35,10 +35,16 @@ $governor-theme: mat-light-theme($governor-primary, $governor-accent, $governor-
 
 body {
   background-image: linear-gradient(230deg, #726aff 655px, #948fff 655px, transparent 655px);
+  background-repeat: no-repeat;
 
   @media only screen and (max-width: 450px) {
     background-image: linear-gradient(230deg, #726aff 120px, #948fff 210px, transparent 0%);
   }
+
+  @media only screen and (max-width: 720px) {
+    background-image: linear-gradient(240deg, #726aff 140px, #948fff 280px, transparent 0px);
+  }
+  
 }
 
 ul li {
