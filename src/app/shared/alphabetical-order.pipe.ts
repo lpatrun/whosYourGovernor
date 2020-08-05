@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from "@angular/core";
   name: "alphabeticalOrder"
 })
 export class AlphabeticalOrderPipe implements PipeTransform {
-  transform(value: any, args?: any): any {
+  transform(value: any): any {
     if (value != null) {
       return value.sort(function(a, b) {
         return a.name.localeCompare(b.name);

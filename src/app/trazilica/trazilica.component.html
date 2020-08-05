@@ -6,14 +6,13 @@
     <div class="content-container__title--bottom">{{ 'appText.person' | translate }}</div>
   </div>
 
-  <form (ngSubmit)="onSubmit()">
+  <form (ngSubmit)="onSubmit()" [formGroup]="searchForm">
 
     <label for="zupanija" class="label-class">{{ 'appText.county' | translate }}</label>
     <div class="county">
       <input type="text" placeholder=" &#xf041;   {{ 'appText.county' | translate }}"
-        style="font-family:Arial, FontAwesome" aria-label="Text" matInput [formControl]="countiesControl"
-        [matAutocomplete]="auto" (focus)="countyAutoSelect()" #countyKup (keyup)="getZupanija(countyKup.value)"
-        id="zupanija">
+        aria-label="Text" matInput [matAutocomplete]="auto"
+        (focus)="countyAutoSelect()" id="zupanija" formControlName="county">
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getZupanija($event.option.value)'>
         <mat-option *ngFor="let zupanija of filteredCounties | async | alphabeticalOrder" [value]="zupanija.name">
           {{ zupanija.name }}
@@ -22,13 +21,12 @@
     </div>
 
     <label for="gradOpcina" class="label-class">{{ 'appText.town' | translate }}</label>
-    <div class="county">
+    <div class="county"> 
       <div class="county__responsive-grid">
         <div>
           <input type="text" placeholder=" &#xf041;   {{ 'appText.town' | translate }}"
-            style="font-family:Open Sans, FontAwesome" aria-label="Text" matInput [formControl]="townControl"
-            [matAutocomplete]="auto2" (focus)="townComunityAutoSelect()" #comunityKup
-            (keyup)="getOpcina(comunityKup.value)">
+            aria-label="Text" matInput [matAutocomplete]="auto2"
+            (focus)="townComunityAutoSelect()" id="gradOpcina" formControlName="town">
           <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="getOpcina($event.option.value)">
             <mat-option *ngFor="let opcina of filteredTown | async | alphabeticalOrder" [value]="opcina.name">
               {{ opcina.name }}
@@ -101,42 +99,3 @@
     </div>
   </div>
 </div>
-
-
- <!-- Prva verzija
-   <form (ngSubmit)="onSubmit()" #f="ngForm">
-    <label for="zupanija" class="label-class">Županija</label>
-    <div class="county">
-      <input type="text" name="zupanija" id="zupanija" ngModel autocomplete="off" (focus)="toggleCountyDropdown()"
-        placeholder=" &#xf041;   Županija" style="font-family:Arial, FontAwesome" #countyKup
-        (keyup)="onCountyKeyUp(countyKup.value)">
-      <div class="county__dropdown" (blur)="toggleCountyDropdown()">
-        <div *ngIf="countyDropdown">
-          <div *ngFor="let county of listCounties" class="county__dropdown-option" (click)="selectCounty(county)">
-            {{ county }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <label for="gradOpcina" class="label-class">Grad ili općina</label>
-    <div class="county">
-      <div class="county__responsive-grid">
-        <div>
-          <input type="text" name="gradOpcina" id="gradOpcina" ngModel autocomplete="off"
-            (focus)="toggleTownComunityDropown()" placeholder=" &#xf041;   Grad ili općina"
-            style="font-family:Open Sans, FontAwesome" #towComUp (keyup)="ontowComUp(towComUp.value)">
-          <div class="county__dropdown" (blur)="toggleTownComunityDropown()">
-            <div *ngIf="townComunityDropdown">
-              <div *ngFor="let item of listTownsComunities" class="county__dropdown-option"
-                (click)="selectTownComunity(item)">
-                {{ item }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <button class="btn-submit" type="submit" [disabled]="!isFormValid">Detalji</button>
-      </div>
-
-    </div>
-  </form> -->

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import { County } from '../shared/county.model';
@@ -15,8 +15,7 @@ import { CountyGovernor } from '../shared/county-governor.model';
   styleUrls: ['./trazilica.component.scss']
 })
 export class TrazilicaComponent implements OnInit {
-  countiesControl: FormControl = new FormControl();
-  townControl: FormControl = new FormControl();
+  searchForm: FormGroup;
 
   counties: County[] = [];
   filteredCounties: Observable<County[]>;
@@ -34,22 +33,36 @@ export class TrazilicaComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.dataService.countiesSub.subscribe((counties: County[]) => {
-      this.counties = counties;
-    });
-    this.dataService.townComSub.subscribe((townsComunities: Town[]) => {
+    this.dataService.countiesSub.subscribe(
+      (counties: County[]) => this.counties = counties);
+
+    this.dataService.townComSub.subscribe(
+      (townsComunities: Town[]) => {
       this.town = [...this.town, ...townsComunities];
       this.townMainContainer = [...this.town];
     });
-    this.dataService.townGovernor.subscribe((governor: TownGovernor) => {
-      this.townGovernor = governor;
+    
+    this.dataService.countyGowernor.subscribe(
+      (countyGuverner: CountyGovernor) => this.countyGovernor = countyGuverner );
+    
+    this.dataService.townGovernor.subscribe(
+      (governor: TownGovernor) => this.townGovernor = governor );
+
+    this.searchForm = new FormGroup({
+      'county': new FormControl(),
+      'town': new FormControl(),
     });
-    this.dataService.countyGowernor.subscribe((countyGuverner: CountyGovernor) => {
-      this.countyGovernor = countyGuverner;
-    });
+
+    this.searchForm.get('county').valueChanges.subscribe(
+      value => this.getZupanija(value)
+    )
+
+    this.searchForm.get('town').valueChanges.subscribe(
+      value => this.getOpcina(value)
+    )    
   }
 
-  getZupanija(zupanija) {
+  getZupanija(zupanija: string): void {
     if (zupanija == "" || zupanija == undefined || zupanija == null) {
       this.town = this.townMainContainer;
     } else if (this.countyExists(zupanija)) {
@@ -60,20 +73,20 @@ export class TrazilicaComponent implements OnInit {
     } else {
       this.validCounty = false;
     }
-    if (this.townControl.value !== null && this.townControl.value !== undefined) {
-      if (this.findCounty(this.townControl.value) != zupanija) {
-        this.townControl.setValue("");
+    if (this.searchForm.value.town !== null && this.searchForm.value.town !== undefined) {
+      if (this.findCounty(this.searchForm.value.town) != zupanija) {
+        this.searchForm.patchValue({'town': ""});
         this.countyAutoSelect();
       }
     }
   }
 
   //jel pojam upisan u prvu kucicu valjan
-  countyExists(zupanija) {
+  countyExists(zupanija: string): boolean {
     return this.counties.find(item => item.name === zupanija) ? true : false;
   }
 
-  findCounty(opcina) {
+  findCounty(opcina: string): string {
     if (opcina) {
       let opcinaObjekt = this.townMainContainer.find(
         item => item.name === opcina
@@ -84,36 +97,34 @@ export class TrazilicaComponent implements OnInit {
     }
   }
 
-  getOpcina(opcina) {
+  getOpcina(opcina: string): void {
     if (this.opcinaExists(opcina)) {
       this.validTown = true;
       const zupanija = this.townMainContainer.find(
         item => item.name === opcina
       );
-      this.countiesControl.setValue(zupanija.countyName);
+      this.searchForm.patchValue({'county': zupanija.countyName});
     } else {
       this.validTown = false;
     }
   }
 
-  //valjanost unosa u prvu kucicu
-  opcinaExists(opcina) {
-    return this.townMainContainer.find(item => item.name === opcina)
-      ? true
-      : false;
+  //valjanost unosa u drugu kucicu
+  opcinaExists(opcina: string): boolean {
+    return this.townMainContainer.find(item => item.name === opcina) ? true : false;
   }
 
-  countyAutoSelect() {
-    this.filteredCounties = this.countiesControl.valueChanges.pipe(
+  countyAutoSelect(): void {
+    this.filteredCounties = this.searchForm.get('county').valueChanges.pipe(
       startWith(""),
-      map(value => this._countyFilter(value))
+      map(value => this._countyFilter(value.toString()))
     );
   }
 
-  townComunityAutoSelect() {
-    this.filteredTown = this.townControl.valueChanges.pipe(
+  townComunityAutoSelect(): void {
+    this.filteredTown = this.searchForm.get('town').valueChanges.pipe(
       startWith(""),
-      map(value => this._townComunityFilter(value))
+      map(value => this._townComunityFilter(value.toString()))
     );
   }
 
@@ -131,214 +142,28 @@ export class TrazilicaComponent implements OnInit {
     );
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.townGovernor = null;
     this.countyGovernor = null;
 
-    //ako je odabrana samo zupanija
-    if (this.countiesControl.value !== null && this.townControl.value === null || this.townControl.value === "") {
-      let zupanijaId = this.counties.find(element => element.name === this.countiesControl.value);
+    if (this.searchForm.value.county !== null && this.searchForm.value.town === null || this.searchForm.value.town === "") {
+      let zupanijaId = this.counties.find(element => element.name === this.searchForm.value.county);
       this.dataService.toGetCountyGovernor(zupanijaId.entityType, zupanijaId.ID);
       this.entityToDisplay = zupanijaId.name;
     }
     //ako je odabran grad (i zupanija (zupanija se sama doda))
-    else if (this.townControl.value !== null && this.countiesControl.value !== null) {
-      let gradID = this.town.find(element => element.name === this.townControl.value);
+    else if (this.searchForm.value.town !== null && this.searchForm.value.county !== null) {
+      let gradID = this.town.find(element => element.name === this.searchForm.value.town);
       this.dataService.toGetTownGovernor(gradID.entityType, gradID.ID);
       this.entityToDisplay = gradID.name;
     }
-    this.countiesControl.setValue("");
-    this.townControl.setValue("");
+
+    this.searchForm.setValue({
+      'county': "",
+      'town': ""
+    });
     this.town = this.townMainContainer;
     this.validCounty = false;
     this.validTown = false;
   }
 }
-
-
-// prva verzija
-/* @ViewChild('f') governorSearch: NgForm;
-
-counties: County[] = [];
-listCountiesMainContainer: Array<string> = [];
-listCounties: Array<string> = [];
-townsComunities: Town[] = [];
-listTownsComunitiesMainContainer: Array<string> = [];
-listTownsComunities: Array<string> = [];
-townGovernor: TownGovernor;
-countyGovernor: CountyGovernor;
-countyDropdown: boolean = false;
-townComunityDropdown: boolean = false;
-isFormValid: boolean = false;
-
-constructor(private dataService: DataService) { }
-
-ngOnInit(): void {
-  this.dataService.countiesSub.subscribe((counties: County[]) => {
-    this.counties = counties;
-    this.populatelistCounties(counties);
-  });
-  this.dataService.townComSub.subscribe((townsComunities: Town[]) => {
-    this.townsComunities = [...this.townsComunities, ...townsComunities];
-    this.populatelistTownsComunities(townsComunities);
-  });
-  this.dataService.townGovernor.subscribe((governor: TownGovernor) => {
-    this.townGovernor = governor;
-  });
-  this.dataService.countyGowernor.subscribe((countyGuverner: CountyGovernor) => {
-    this.countyGovernor = countyGuverner;
-  });
-}
-
-populatelistCounties(counties) {
-  counties.forEach(element => this.listCounties.push(element.name));
-  this.listCounties = this.sortAlphabetically(this.listCounties);
-  this.listCountiesMainContainer = this.listCounties;
-}
-
-populatelistTownsComunities(townsAndCommunities) {
-  townsAndCommunities.forEach(element => this.listTownsComunitiesMainContainer.push(element.name));
-  this.listTownsComunitiesMainContainer = this.sortAlphabetically(this.listTownsComunitiesMainContainer);
-  this.listTownsComunities = this.listTownsComunitiesMainContainer;
-}
-
-sortAlphabetically(array) {
-  return array.sort(function (a, b) {
-    return a.localeCompare(b);
-  });
-}
-
-selectCounty(county: string) {
-  this.governorSearch.form.patchValue({
-    zupanija: county
-  });
-  this.onCountyKeyUp(county);
-  this.toggleCountyDropdown();
-  this.isFormValid = true;
-}
-
-selectTownComunity(item: string) {
-  this.governorSearch.form.patchValue({
-    gradOpcina: item
-  });
-  this.ontowComUp(item);
-  this.toggleTownComunityDropown();
-  this.isFormValid = true;
-}
-
-findTownID(town: string) {
-  const townCommunity = this.townsComunities.find(element => element.name === town);
-  this.dataService.toGetTownGovernor(townCommunity.entityType, townCommunity.ID);
-}
-
-findCountyID(county: string) {
-  const countyObject = this.counties.find(element => element.name === county);
-  this.dataService.toGetCountyGovernor(countyObject.entityType, countyObject.ID);
-}
-
-toggleCountyDropdown() {
-  this.countyDropdown = !this.countyDropdown;
-}
-
-toggleTownComunityDropown() {
-  this.townComunityDropdown = !this.townComunityDropdown;
-}
-
-onCountyKeyUp(value: string) {
-  let inputIsValid: boolean = this.validateCountyInput(value);
-  // filtriranje kroz popis županija za padajuću listu
-  if (value.trim() == "") {
-    this.listCounties = this.listCountiesMainContainer;
-  } else {
-    value = value.trim().toUpperCase();
-    this.listCounties = this.listCountiesMainContainer.filter(item => item.startsWith(value));
-  }
-
-  if (value == "") {
-    this.listTownsComunities = [];
-    this.townsComunities.forEach(element => this.listTownsComunities.push(element.name));
-    this.listTownsComunities.sort(function (a, b) {
-      return a.localeCompare(b);
-    });
-  }
-  else if (inputIsValid) {
-    this.isFormValid = true;
-    this.listTownsComunities = [];
-    const selectedCounty = this.counties.find(element => element.name === value);
-    this.townsComunities.forEach(element => {
-      if (element.countyID === selectedCounty.ID) {
-        this.listTownsComunities.push(element.name);
-      }
-    })
-    this.listTownsComunities.sort(function (a, b) {
-      return a.localeCompare(b);
-    });
-  }
-  //čišćenje inputa za grad/općinu ukoliko je novounešena županija ispravna
-  if (inputIsValid && this.governorSearch.form.value.gradOpcina != "" || this.governorSearch.form.value.gradOpcina != undefined) {
-    this.governorSearch.form.patchValue({
-      gradOpcina: null
-    });
-  }
-  if (!inputIsValid) {
-    this.isFormValid = false;
-  }
-  console.log(this.listTownsComunities);
-}
-
-validateCountyInput(value: string) {
-  value = value.toUpperCase();
-  return this.counties.find(element => element.name === value) ? true : false;
-}
-
-ontowComUp(value: string) {
-  const townCommunityInputIsValid = this.validateTownComInput(value);
-  // filtriranje kroz popis gradova/opcina za padajuću listu
-  if (value.trim() == "") {
-    this.listTownsComunities = this.listTownsComunitiesMainContainer;
-  } else {
-    value = value.trim();
-    value = value.charAt(0).toUpperCase() + value.slice(1)
-    this.listTownsComunities = this.listTownsComunitiesMainContainer.filter(item => item.startsWith(value));
-    if (townCommunityInputIsValid) {
-      value = value.trim().toLowerCase();
-      value = value.charAt(0).toUpperCase() + value.slice(1)
-      const countyFill = this.townsComunities.find(element => element.name === value);
-      this.governorSearch.form.patchValue({
-        zupanija: countyFill.countyName
-      });
-      this.isFormValid = true;
-    }
-  }
-  if (!townCommunityInputIsValid) {
-    this.isFormValid = false;
-  }
-}
-
-validateTownComInput(value: string) {
-  value = value.trim().toLowerCase();
-  value = value.charAt(0).toUpperCase() + value.slice(1)
-  return this.townsComunities.find(element => element.name === value) ? true : false;
-}
-
-getCountyValue() {
-  return this.governorSearch.value.zupanija;
-}
-
-onSubmit() {
-  this.townGovernor = null;
-  this.countyGovernor = null;
-  if (this.governorSearch.value.zupanija && !this.governorSearch.value.gradOpcina) {
-    this.findCountyID((this.governorSearch.value.zupanija).toUpperCase());
-  }
-  if (this.governorSearch.value.gradOpcina || this.governorSearch.value.zupanija && this.governorSearch.value.gradOpcina) {
-    let searchValue = this.governorSearch.value.gradOpcina;
-    searchValue = searchValue.toLowerCase();
-    searchValue = searchValue.charAt(0).toUpperCase() + searchValue.slice(1);
-    this.findTownID(searchValue);
-  }
-  this.governorSearch.reset()
-  this.isFormValid = false;
-  this.listCounties = this.listCountiesMainContainer;
-  this.listTownsComunities = this.listTownsComunitiesMainContainer;
-} */
