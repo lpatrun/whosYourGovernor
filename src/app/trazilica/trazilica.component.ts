@@ -158,10 +158,7 @@ export class TrazilicaComponent implements OnInit {
       this.entityToDisplay = gradID.name;
     }
 
-    this.searchForm.setValue({
-      'county': "",
-      'town': ""
-    });
+    this.searchForm.reset();
     this.town = this.townMainContainer;
     this.validCounty = false;
     this.validTown = false;
