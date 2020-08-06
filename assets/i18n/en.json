@@ -1,0 +1,17 @@
+{
+  "appText": {
+    "question": "Who's Your",
+    "person": "Governor?",
+    "county": "County",
+    "town": "Town or community",
+    "details": "Show details",
+    "detailsFor": "Details for",
+    "mayor": "Mayor",
+    "vice": "Vice",
+    "address": "Address",
+    "telephone": "Telephone",
+    "zip": "ZIP",
+    "fax": "Fax",
+    "governor": "Governor"
+  }
+}

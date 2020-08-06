@@ -1,0 +1,17 @@
+{
+  "appText": {
+    "question": "Tko je Vaš",
+    "person": "Predstavnik?",
+    "county": "Županija",
+    "town": "Grad ili općina",
+    "details": "Pokaži detalje",
+    "detailsFor": "Detalji za",
+    "mayor": "Gradonačelnik",
+    "vice": "Zamjenik",
+    "address": "Adresa",
+    "telephone": "Telefon",
+    "zip": "Poštanski broj",
+    "fax": "Faks",
+    "governor": "Župan"
+  }
+}
