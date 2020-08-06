@@ -38,15 +38,15 @@ export class TrazilicaComponent implements OnInit {
 
     this.dataService.townComSub.subscribe(
       (townsComunities: Town[]) => {
-      this.town = [...this.town, ...townsComunities];
-      this.townMainContainer = [...this.town];
-    });
-    
+        this.town = [...this.town, ...townsComunities];
+        this.townMainContainer = [...this.town];
+      });
+
     this.dataService.countyGowernor.subscribe(
-      (countyGuverner: CountyGovernor) => this.countyGovernor = countyGuverner );
-    
+      (countyGuverner: CountyGovernor) => this.countyGovernor = countyGuverner);
+
     this.dataService.townGovernor.subscribe(
-      (governor: TownGovernor) => this.townGovernor = governor );
+      (governor: TownGovernor) => this.townGovernor = governor);
 
     this.searchForm = new FormGroup({
       'county': new FormControl(),
@@ -59,7 +59,7 @@ export class TrazilicaComponent implements OnInit {
 
     this.searchForm.get('town').valueChanges.subscribe(
       value => this.getOpcina(value)
-    )    
+    )
   }
 
   getZupanija(zupanija: string): void {
@@ -75,7 +75,7 @@ export class TrazilicaComponent implements OnInit {
     }
     if (this.searchForm.value.town !== null && this.searchForm.value.town !== undefined) {
       if (this.findCounty(this.searchForm.value.town) != zupanija) {
-        this.searchForm.patchValue({'town': ""});
+        this.searchForm.patchValue({ 'town': "" });
         this.countyAutoSelect();
       }
     }
@@ -103,7 +103,7 @@ export class TrazilicaComponent implements OnInit {
       const zupanija = this.townMainContainer.find(
         item => item.name === opcina
       );
-      this.searchForm.patchValue({'county': zupanija.countyName});
+      this.searchForm.patchValue({ 'county': zupanija.countyName });
     } else {
       this.validTown = false;
     }
@@ -115,31 +115,38 @@ export class TrazilicaComponent implements OnInit {
   }
 
   countyAutoSelect(): void {
-    this.filteredCounties = this.searchForm.get('county').valueChanges.pipe(
-      startWith(""),
-      map(value => this._countyFilter(value.toString()))
-    );
+    let data = this.searchForm.get('county').value;
+    if (data !== "" || data !== null) {
+      this.filteredCounties = this.searchForm.get('county').valueChanges.pipe(
+        startWith(""),
+        map(value => this._countyFilter(value))
+      );
+    }
   }
 
   townComunityAutoSelect(): void {
     this.filteredTown = this.searchForm.get('town').valueChanges.pipe(
       startWith(""),
-      map(value => this._townComunityFilter(value.toString()))
+      map(value => this._townComunityFilter(value))
     );
   }
 
   private _countyFilter(value: string): County[] {
-    const filterValue = value.toLowerCase();
-    return this.counties.filter(
-      item => item.name.toLowerCase().indexOf(filterValue) === 0
-    );
+    if (value !== null) {
+      const filterValue = value.toLowerCase();
+      return this.counties.filter(
+        item => item.name.toLowerCase().indexOf(filterValue) === 0
+      );
+    }
   }
 
   private _townComunityFilter(value: string): Town[] {
-    const filterValue = value.toLowerCase();
-    return this.town.filter(
-      item => item.name.toLowerCase().indexOf(filterValue) === 0
-    );
+    if (value !== null) {
+      const filterValue = value.toLowerCase();
+      return this.town.filter(
+        item => item.name.toLowerCase().indexOf(filterValue) === 0
+      );
+    }
   }
 
   onSubmit(): void {
